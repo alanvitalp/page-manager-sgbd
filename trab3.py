@@ -20,7 +20,7 @@ pag_dezenove = open("txt/19.txt", "r")
 pag_vinte = open("txt/20.txt", "r")
 
 empty_dir = open("txt/emptyDir.txt", "r")
-not_empty_dir = open("txt/notEmptyDir.txt", "r")
+not_empty_dir = open("txt/notEmptyDir.txt", "r+")
 
 pages = [
     pag_um,
@@ -62,20 +62,93 @@ class Page:
 
     def scan(self):
         for line in not_empty_dir:
+            print("Página " + line)
             file = open(f"txt/{line.strip()}.txt", "r")
             text = file.read()
-            text_array = text.split("\n")
-            slots = text_array[2:-1]
+            bitmap = text[0:5]
+            reader_position = 5
+            slot = 1
+            for bit in bitmap:
+                print("Registro " + str(slot) + ":",end="")
+                if (bit=="1"):
+                    print(text[reader_position:(reader_position+8)])
+                    reader_position = reader_position + 8
+                else:
+                    print("Disponível")
+                slot+=1
+            
+            #text_array = text.split("\n")
+            #slots = text_array[2:8]
+            #print("\nPágina " + line)
+            #i=1
+            #for slot in slots:
+            #    print("Registro " + str(i) + ":", end="")
+            #    if (slot == ""):
+            #        print("Disponível")
+            #    else:
+            #        print(slot)
+            #    i+=1
 
-            print(slots)
+    def seek(self, byte):
+        for line in not_empty_dir:
+            file = open(f"txt/{line.strip()}.txt", "r")
+            text = file.read()
+            bitmap = text[0:5]
+            reader_position = 5
+            slot = 1
+            line=line.strip("\n")
+            for bit in bitmap:
+                if (bit=="1"):
+                    if ((text[reader_position:(reader_position+8)]) == str(byte)):
+                        return int(line), slot
+                    reader_position = reader_position + 8
+                slot+=1
+            
+            
+            
+    def delete(self, byte):
+        for line in not_empty_dir:
+            file = open(f"txt/{line.strip()}.txt", "r+")
+            text = file.read()
+            text_lines = file.readlines()
+            bitmap = text[0:5]
+            reader_position = 5
+            slot = 1
+            for bit in bitmap:
+                if (bit == "1"):
+                    if ((text[reader_position:(reader_position+8)]) == str(byte)):
+                        text = text[0:reader_position] + text[reader_position+8:]
+                        array_text = list(text)
+                        array_text[slot-1]="0"
+                        new_text = "".join(array_text)
+                        file.seek(0)
+                        file.write(new_text)
+                        file.truncate()
+                        bitmap = new_text[0:5]
+                        if (bitmap == "00000"):
+                            #deleta o arquivo
+                                
+                        return 0
+                    reader_position = reader_position + 8
+                slot+=1
 
-            # def seek(self, byte):
-
-            # def delete(self, byte):
-
-            # def insert(self, byte):
+    def insert(self,byte):
+        for line in not_empty_dir:
+            file = open(f"txt/{line.strip()}.txt", "r+")
+            text = file.read()
+            bitmap = text[0:5]
+            reader_position = 5
+            slot = 1
+            line = line.strip("\n")
+            for bit in bitmap:
+                if (bit == "0"):
+                    array_text1 = list(text[0:reader_position])
+                    array_text1[slot-1] = "1"
+                    array_text2 = list(text[reader_position:])
+                    new_text = "".join(array_text1).join(str(byte)).join(array_text2)
+                    print(new_text)
 
 
 rene = Page(0, 0, 0, 0)
 
-rene.scan()
+rene.delete(11111111)
