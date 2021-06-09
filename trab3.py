@@ -130,7 +130,7 @@ class Page:
                         bitmap = new_text[0:5]
                         if (bitmap == "00000"):
                             not_empty_dir.close()
-
+                
                             new_not_empty_file = open(
                                 "txt/notEmptyDir.txt", "r")
                             empty_dir = open("txt/emptyDir.txt", "a")
@@ -142,8 +142,6 @@ class Page:
                             for item in new_lines:
                                 if item.strip("\n") != line.strip("\n"):
                                     new_new_file.write(item)
-                            # for each in empty_dir:
-                            #     if not each.split():
                             empty_dir.write("\n"+line.strip("\n"))
                             empty_dir.close()
                         return 0
@@ -167,13 +165,17 @@ class Page:
                     array_text1 = list(text[0:reader_position])
                     array_text1[slot-1] = "1"
                     array_text2 = list(text[reader_position:])
-                    new_text = "".join(array_text1).join(
-                        str(byte)).join(array_text2)
-                    print(new_text)
+                    new_text = array_text1 + list(str(byte)) + array_text2
+                    aux = "".join([item for item in new_text])
+                    file.seek(0)
+                    file.write(aux)
+                    file.truncate
+                    return 0
+        
         empty_dir.close()
         not_empty_dir.close()
 
 
 rene = Page(0, 0, 0, 0)
 
-rene.delete(11111111)
+rene.insert(11111111)
