@@ -133,15 +133,18 @@ class Page:
 
                             new_not_empty_file = open(
                                 "txt/notEmptyDir.txt", "r")
-                            empty_dir = open("txt/emptyDir.txt", "w")
+                            empty_dir = open("txt/emptyDir.txt", "a")
                             new_lines = new_not_empty_file.readlines()
                             new_not_empty_file.close()
 
-                            new_new_file = open("txt/notEmptyDir.txt", "w")
+                            new_new_file = open(
+                                "txt/notEmptyDir.txt", "w")
                             for item in new_lines:
-                                if item.strip("\n") != line:
+                                if item.strip("\n") != line.strip("\n"):
                                     new_new_file.write(item)
-                            empty_dir.write(line)
+                            # for each in empty_dir:
+                            #     if not each.split():
+                            empty_dir.write("\n"+line.strip("\n"))
                             empty_dir.close()
                         return 0
                     reader_position = reader_position + 8
